@@ -25,7 +25,7 @@
 	proj_trail_icon_state = "magicmd"
 
 	action_icon_state = "magicm"
-	
+
 	sound = 'sound/magic/MAGIC_MISSILE.ogg'
 
 /obj/effect/proc_holder/spell/targeted/inflict_handler/magic_missile
@@ -97,7 +97,7 @@
 
 	emp_heavy = 6
 	emp_light = 10
-	
+
 	sound = 'sound/magic/Disable_Tech.ogg'
 
 /obj/effect/proc_holder/spell/targeted/turf_teleport/blink
@@ -123,7 +123,7 @@
 	centcom_cancast = 0 //prevent people from getting to centcom
 
 	action_icon_state = "blink"
-	
+
 	sound1 = 'sound/magic/blink.ogg'
 	sound2 = 'sound/magic/blink.ogg'
 
@@ -144,7 +144,7 @@
 	smoke_amt = 5
 
 	action_icon_state = "spell_teleport"
-	
+
 	sound1 = 'sound/magic/Teleport_diss.ogg'
 	sound2 = 'sound/magic/Teleport_app.ogg'
 
@@ -194,7 +194,7 @@
 	summon_type = list(/mob/living/simple_animal/hostile/carp)
 
 	cast_sound = 'sound/magic/Summon_Karp.ogg'
-	
+
 /obj/effect/proc_holder/spell/aoe_turf/conjure/construct
 	name = "Artificer"
 	desc = "This spell conjures a construct which may be controlled by Shades"

@@ -113,6 +113,10 @@
 	reagent_state = SOLID
 	color = "#D0D0D0" // rgb: 208, 208, 208
 
+/datum/reagent/silver/reaction_mob(mob/living/M, method=TOUCH, volume)
+	if(M.has_bane(BANE_SILVER))
+		M.reagents.add_reagent("toxin", volume)
+	. = ..()
 
 /datum/reagent/aluminum
 	name = "Aluminum"
@@ -149,6 +153,11 @@
 		var/mob/living/carbon/human/H = M
 		if(!H.species.exotic_blood && !(H.species.flags & NO_BLOOD))
 			H.vessel.add_reagent("blood", 0.8)
+	..()
+
+/datum/reagent/iron/reaction_mob(mob/living/M, method=TOUCH, volume)
+	if(M.has_bane(BANE_IRON) && holder && holder.chem_temp < 150) //If the target is weak to cold iron, then poison them.
+		M.reagents.add_reagent("toxin", volume)
 	..()
 
 //foam

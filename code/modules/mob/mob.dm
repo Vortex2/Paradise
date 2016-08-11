@@ -1209,7 +1209,7 @@ var/list/slot_equipment_priority = list( \
 		to_chat(host, "<span class='info'>You are now a mouse. Try to avoid interaction with players, and do not give hints away that you are more than a simple rodent.</span>")
 
 /mob/proc/assess_threat() //For sec bot threat assessment
-	return
+	return 5
 
 /mob/proc/get_ghost(even_if_they_cant_reenter = 0)
 	if(mind)
@@ -1309,6 +1309,7 @@ var/list/slot_equipment_priority = list( \
 			return 1
 	return 0
 
+<<<<<<< HEAD
 /mob/proc/create_attack_log(var/text, var/collapse = 1)//forgive me code gods for this shitcode proc
 	//this proc enables lovely stuff like an attack log that looks like this: "[18:20:29-18:20:45]21x John Smith attacked Andrew Jackson with a crowbar."
 	//That makes the logs easier to read, but because all of this is stored in strings, weird things have to be used to get it all out.
@@ -1344,3 +1345,6 @@ var/list/slot_equipment_priority = list( \
 
 	attack_log += new_log
 	last_log = world.timeofday
+
+/mob/proc/is_literate()
+	return 0

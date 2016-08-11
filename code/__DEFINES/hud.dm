@@ -36,7 +36,7 @@
 #define DATA_HUD_DIAGNOSTIC			5
 #define DATA_HUD_HYDROPONIC			6
 //NATIONS
-#define GAME_HUD_NATIONS	7
+#define GAME_HUD_NATIONS			7
 //antag HUD defines
 #define ANTAG_HUD_CULT		8
 #define ANTAG_HUD_REV		9
@@ -48,6 +48,7 @@
 #define ANTAG_HUD_CHANGELING 15
 #define ANTAG_HUD_VAMPIRE 16
 #define ANTAG_HUD_ABDUCTOR 17 //For Fox
+#define ANTAG_HUD_DEVIL 18
 
 // Notification action types
 #define NOTIFY_JUMP "jump"
