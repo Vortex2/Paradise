@@ -367,11 +367,11 @@
 			text = uppertext(text)
 		text = "<i><b>[text]</b></i>: "
 		if(src in ticker.mode.devils)
-			text += "<b>DEVIL</b>|sintouched|<a href='?src=\ref[src];devil=clear'>human</a>"
+			text += "<b>DEVIL</b>|sintouched|<a href='?src=[UID()];devil=clear'>human</a>"
 		else if(src in ticker.mode.sintouched)
-			text += "devil|<b>SINTOUCHED</b>|<a href='?src=\ref[src];devil=clear'>human</a>"
+			text += "devil|<b>SINTOUCHED</b>|<a href='?src=[UID()];devil=clear'>human</a>"
 		else
-			text += "<a href='?src=\ref[src];devil=devil'>devil</a>|<a href='?src=\ref[src];devil=sintouched'>sintouched</a>|<b>HUMAN</b>"
+			text += "<a href='?src=[UID()];devil=devil'>devil</a>|<a href='?src=[UID()];devil=sintouched'>sintouched</a>|<b>HUMAN</b>"
 
 		if(current && current.client && (ROLE_DEVIL in current.client.prefs.be_special))
 			text += "|Enabled in Prefs"

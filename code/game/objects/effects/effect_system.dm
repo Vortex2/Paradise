@@ -627,6 +627,19 @@ steam.start() -- spawns the effect
 					smoke.delete()
 					src.total_smoke--
 
+/*
+// hoo boy, I think I need to refactor our smoke code
+/////////////////////////////////////////////
+// Transparent smoke
+/////////////////////////////////////////////
+//Same as the base type, but the smoke produced is not opaque
+/datum/effect_system/smoke_spread/transparent
+	effect_type = /obj/effect/particle_effect/smoke/transparent
+
+/obj/effect/particle_effect/smoke/transparent
+	opaque = FALSE
+*/
+
 /////////////////////////////////////////////
 // Mustard Gas
 /////////////////////////////////////////////

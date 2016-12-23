@@ -22,11 +22,35 @@
 	var/mob/living/oldform
 	var/list/devil_overlays[DEVIL_TOTAL_LAYERS]
 
-/mob/living/carbon/true_devil/New()
+/mob/living/carbon/true_devil/New(loc, mob/living/carbon/dna_source)
+	dna = dna_source.dna.Clone()
 	var/obj/item/organ/internal/brain/B = new(src)
 	B.insert()
 	..()
 
+
+/mob/living/carbon/true_devil/update_sight()
+	if(stat == DEAD)
+		sight |= SEE_TURFS
+		sight |= SEE_MOBS
+		sight |= SEE_OBJS
+		see_in_dark = 8
+		see_invisible = SEE_INVISIBLE_LEVEL_TWO
+	else
+		sight = (SEE_TURFS | SEE_OBJS)
+		see_in_dark = 2
+		see_invisible = SEE_INVISIBLE_LIVING
+
+		if(see_override)
+			see_invisible = see_override
+
+// inventory system could use some love
+/mob/living/carbon/true_devil/put_in_hands(obj/item/W)
+	if(!W)		return 0
+	if(put_in_active_hand(W))			return 1
+	else if(put_in_inactive_hand(W))	return 1
+	else
+		..()
 
 /mob/living/carbon/true_devil/proc/convert_to_archdevil()
 	maxHealth = 5000 // not an IMPOSSIBLE amount, but still near impossible.
@@ -163,7 +187,7 @@
 			if ("disarm")
 				if (!lying && !ascended) //No stealing the arch devil's pitchfork.
 					if (prob(5))
-						Paralyse(2)
+						Weaken(2)
 						playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
 						add_logs(M, src, "pushed")
 						visible_message("<span class='danger'>[M] has pushed down [src]!</span>", \

@@ -59,6 +59,12 @@
 	devilsouldisplay = new /obj/screen/devil/soul_counter
 	infodisplay += devilsouldisplay
 
+	for(var/obj/screen/inventory/inv in static_inventory)
+		if(inv.slot_id)
+			inv.hud = src
+			inv_slots[inv.slot_id] = inv
+			inv.update_icon()
+
 
 /datum/hud/devil/persistant_inventory_update()
 	if(!mymob)
