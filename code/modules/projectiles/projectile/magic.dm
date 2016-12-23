@@ -17,8 +17,9 @@
 	damage = 10
 	damage_type = BRUTE
 	nodamage = 0
-	
+
 	//explosion values
+	var/exp_devastate = -1
 	var/exp_heavy = 0
 	var/exp_light = 2
 	var/exp_flash = 3
@@ -51,11 +52,11 @@
 /obj/item/projectile/magic/fireball/on_hit(var/target)
 	. = ..()
 	var/turf/T = get_turf(target)
-	explosion(T, -1, 0, 2, 3, 0, flame_range = 2)
+	explosion(T, exp_devastate, exp_heavy, exp_light, exp_flash, 0, flame_range = exp_fire)
 	if(ismob(target)) //multiple flavors of pain
 		var/mob/living/M = target
 		M.take_overall_damage(0,10) //between this 10 burn, the 10 brute, the explosion brute, and the onfire burn, your at about 65 damage if you stop drop and roll immediately
-		
+
 
 /obj/item/projectile/magic/fireball/infernal
 	name = "infernal fireball"
@@ -293,4 +294,4 @@ proc/wabbajack(mob/living/M)
 	damage_type = BURN
 	flag = "magic"
 	dismemberment = 50
-	nodamage = 0		
+	nodamage = 0

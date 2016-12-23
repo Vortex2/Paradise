@@ -1309,7 +1309,6 @@ var/list/slot_equipment_priority = list( \
 			return 1
 	return 0
 
-<<<<<<< HEAD
 /mob/proc/create_attack_log(var/text, var/collapse = 1)//forgive me code gods for this shitcode proc
 	//this proc enables lovely stuff like an attack log that looks like this: "[18:20:29-18:20:45]21x John Smith attacked Andrew Jackson with a crowbar."
 	//That makes the logs easier to read, but because all of this is stored in strings, weird things have to be used to get it all out.

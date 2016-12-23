@@ -218,6 +218,7 @@ var/global/list/lawlorify = list (
 	to_chat(D,"<span class='warning'>Your powers weaken, have more contracts be signed to regain power.</span>")
 	D.oldform.loc = D.loc
 	owner.transfer_to(D.oldform)
+	D.oldform.status_flags &= ~GODMODE
 	give_lizard_spells()
 	qdel(D)
 	form = BLOOD_LIZARD
@@ -247,6 +248,7 @@ var/global/list/lawlorify = list (
 	sleep(50)
 	var/mob/living/carbon/true_devil/A = new /mob/living/carbon/true_devil(owner.current.loc, owner.current)
 	A.faction |= "hell"
+	owner.current.status_flags |= GODMODE
 	owner.current.loc = A
 	A.oldform = owner.current
 	owner.transfer_to(A)
@@ -297,7 +299,7 @@ var/global/list/lawlorify = list (
 		D.forceMove(get_turf(D))
 	var/area/A = get_area(owner.current)
 	if(A)
-		notify_ghosts("An arch devil has ascended in \the [A.name]. Reach out to the devil to start climbing the infernal corporate ladder.", source = owner.current, attack_not_jump = 1)
+		notify_ghosts("An arch devil has ascended in \the [A.name]. Reach out to the devil to start climbing the infernal corporate ladder.", title = "Arch Devil Ascended", source = owner.current, action=NOTIFY_ATTACK)
 	sleep(50)
 	if(!ticker.mode.devil_ascended)
 		shuttle_master.emergency.request(null, 0.3)
@@ -316,7 +318,7 @@ var/global/list/lawlorify = list (
 
 /datum/devilinfo/proc/give_base_spells(give_summon_contract = 0)
 	remove_spells()
-	owner.AddSpell(new /obj/effect/proc_holder/spell/dumbfire/fireball/hellish(null))
+	owner.AddSpell(new /obj/effect/proc_holder/spell/fireball/hellish(null))
 	owner.AddSpell(new /obj/effect/proc_holder/spell/targeted/conjure_item/pitchfork(null))
 	if(give_summon_contract)
 		give_summon_contract()
@@ -328,13 +330,13 @@ var/global/list/lawlorify = list (
 /datum/devilinfo/proc/give_lizard_spells()
 	remove_spells()
 	owner.AddSpell(new /obj/effect/proc_holder/spell/targeted/conjure_item/pitchfork(null))
-	owner.AddSpell(new /obj/effect/proc_holder/spell/dumbfire/fireball/hellish(null))
+	owner.AddSpell(new /obj/effect/proc_holder/spell/fireball/hellish(null))
 	owner.AddSpell(new /obj/effect/proc_holder/spell/targeted/infernal_jaunt(null))
 
 /datum/devilinfo/proc/give_true_spells()
 	remove_spells()
 	owner.AddSpell(new /obj/effect/proc_holder/spell/targeted/conjure_item/pitchfork/greater(null))
-	owner.AddSpell(new /obj/effect/proc_holder/spell/dumbfire/fireball/hellish(null))
+	owner.AddSpell(new /obj/effect/proc_holder/spell/fireball/hellish(null))
 	owner.AddSpell(new /obj/effect/proc_holder/spell/targeted/infernal_jaunt(null))
 	owner.AddSpell(new /obj/effect/proc_holder/spell/targeted/sintouch(null))
 

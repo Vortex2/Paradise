@@ -62,7 +62,7 @@
 			to_chat(user,"<span class='notice'>[C] seems to not be sentient.  You cannot summon a contract for them.</span>")
 
 
-/obj/effect/proc_holder/spell/dumbfire/fireball/hellish
+/obj/effect/proc_holder/spell/fireball/hellish
 	name = "Hellfire"
 	desc = "This spell launches hellfire at the target."
 
@@ -71,12 +71,8 @@
 	clothes_req = 0
 	invocation = "Your very soul will catch fire!"
 	invocation_type = "shout"
-	proj_type = /obj/effect/proc_holder/spell/turf/fireball/infernal
-	range = 2
+	fireball_type = /obj/item/projectile/magic/fireball/infernal
 	action_background_icon_state = "bg_demon"
-
-/obj/effect/proc_holder/spell/turf/fireball/infernal/cast(var/turf/T)
-	explosion(T, -1, -1, -1, 4, 0, flame_range = 5)
 
 /obj/effect/proc_holder/spell/targeted/infernal_jaunt
 	name = "Infernal Jaunt"
@@ -128,7 +124,7 @@
 	dust_animation()
 	src.visible_message("<span class='warning'>[src] disappears in a flashfire!</span>")
 	playsound(get_turf(src), 'sound/misc/enter_blood.ogg', 100, 1, -1)
-	var/obj/effect/dummy/slaughter/holder = PoolOrNew(/obj/effect/dummy/slaughter,loc)
+	var/obj/effect/dummy/slaughter/holder = new (loc)
 	src.ExtinguishMob()
 	if(buckled)
 		buckled.unbuckle_mob(src,force=1)

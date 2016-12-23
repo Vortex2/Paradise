@@ -2,7 +2,7 @@
 #define DEVIL_L_HAND_LAYER 2
 #define DEVIL_TOTAL_LAYERS 2
 
-
+// This is used primarily for having hands.
 /mob/living/carbon/true_devil
 	name = "True Devil"
 	desc = "A pile of infernal energy, taking a vaguely humanoid form."
@@ -145,7 +145,12 @@
 	return TRUE
 
 /mob/living/carbon/true_devil/UnarmedAttack(atom/A, proximity)
-	A.attack_hand(src)
+	if(!ishuman(A))
+		// `attack_hand` on mobs assumes the attacker is a human
+		// I am the worst
+		A.attack_hand(src)
+		// If the devil wants to actually attack, they have the pitchfork.
+
 
 /mob/living/carbon/true_devil/Process_Spacemove(movement_dir = 0)
 	return 1
