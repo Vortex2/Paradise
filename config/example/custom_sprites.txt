@@ -1,1 +1,9 @@
 ckey-state
+
+Custom Borg Sprites
+
+ckey;borg-name
+
+Custom AI sprites
+ckey:ai-name
+ckey:ai-name:Hologram
