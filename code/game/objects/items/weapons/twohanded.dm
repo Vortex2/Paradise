@@ -768,7 +768,7 @@
 	desc = "A simple tool used for moving hay."
 	force = 7
 	throwforce = 15
-	w_class = 4
+	w_class = WEIGHT_CLASS_BULKY
 	force_unwielded = 7
 	force_wielded = 15
 	attack_verb = list("attacked", "impaled", "pierced")

@@ -245,7 +245,10 @@
 /obj/item/weapon/paper/contract/infernal/power/FulfillContract(mob/living/carbon/human/user = target.current, blood = 0)
 	if(!user.dna)
 		return -1
-	user.mutations.Add(HULK)
+	user.dna.SetSEState(HULKBLOCK,1)
+	genemutcheck(user, HULKBLOCK,null,MUTCHK_FORCED)
+	// Demonic power gives you consequenceless hulk
+	user.gene_stability += GENE_INSTABILITY_MAJOR
 	if(ishuman(user))
 		var/mob/living/carbon/human/H = user
 		H.update_body()

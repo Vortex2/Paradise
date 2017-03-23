@@ -30,15 +30,19 @@
 	to_chat(world,text)
 
 
-/datum/game_mode/proc/finalize_devil(datum/mind/devil_mind)
+/datum/game_mode/proc/finalize_devil(datum/mind/devil_mind, ascendable = FALSE)
 	var/trueName= randomDevilName()
 	devil_mind.devilinfo = devilInfo(trueName, 1)
+	devil_mind.devilinfo.ascendable = ascendable
 	if(ishuman(devil_mind.current))
 		// Store a copy for regression
 		devil_mind.devilinfo.humanform = devil_mind.current.dna.Clone()
 	devil_mind.store_memory("Your diabolical true name is [devil_mind.devilinfo.truename]<br>[lawlorify[LAW][devil_mind.devilinfo.ban]]<br>You may not use violence to coerce someone into selling their soul.<br>You may not directly and knowingly physically harm a devil, other than yourself.<br>[lawlorify[LAW][devil_mind.devilinfo.bane]]<br>[lawlorify[LAW][devil_mind.devilinfo.obligation]]<br>[lawlorify[LAW][devil_mind.devilinfo.banish]]<br>")
 	devil_mind.devilinfo.owner = devil_mind
 	devil_mind.devilinfo.give_base_spells(1)
+	if(devil_mind.assigned_role == "Clown")
+		to_chat(devil_mind.current, "Your infernal nature allows you to wield weapons without harming yourself.")
+		devil_mind.current.mutations.Remove(CLUMSY)
 	spawn(10)
 		devil_mind.devilinfo.update_hud()
 	if(issilicon(devil_mind.current))

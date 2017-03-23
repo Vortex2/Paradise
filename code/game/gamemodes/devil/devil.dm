@@ -10,6 +10,16 @@ var/global/list/whiteness = list (
 	/obj/item/clothing/under/rank/virologist = 1,
 	/obj/item/clothing/under/rank/nursesuit = 1,
 	/obj/item/clothing/under/rank/medical = 1,
+	/obj/item/clothing/under/rank/psych = 1,
+	/obj/item/clothing/under/rank/orderly = 1,
+	/obj/item/clothing/under/rank/security/brigphys = 1,
+	/obj/item/clothing/under/rank/internalaffairs = 1,
+	/obj/item/clothing/under/rank/ntrep = 1,
+	/obj/item/clothing/under/det = 1,
+	/obj/item/clothing/under/wedding/bride_white = 1,
+	/obj/item/clothing/under/mafia/white = 1,
+	/obj/item/clothing/under/noble_clothes = 1,
+	/obj/item/clothing/under/sl_suit = 1,
 	/obj/item/clothing/under/burial = 1
 )
 

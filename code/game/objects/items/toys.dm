@@ -1167,7 +1167,7 @@ obj/item/toy/cards/deck/syndicate/black
 	desc = "A tool to help you write fictional devils!"
 	icon = 'icons/obj/library.dmi'
 	icon_state = "demonomicon"
-	w_class = 2
+	w_class = WEIGHT_CLASS_SMALL
 	var/cooldown = FALSE
 
 /obj/item/toy/codex_gigas/attack_self(mob/user)

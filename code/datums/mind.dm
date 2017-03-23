@@ -367,11 +367,16 @@
 			text = uppertext(text)
 		text = "<i><b>[text]</b></i>: "
 		if(src in ticker.mode.devils)
-			text += "<b>DEVIL</b>|sintouched|<a href='?src=[UID()];devil=clear'>human</a>"
+			if(!devilinfo)
+				text += "<b>No devilinfo found! Yell at a coder!</b>"
+			else if(!devilinfo.ascendable)
+				text += "<b>DEVIL</b>|<a href='?src=[UID()];devil=ascendable_devil'>Ascendable Devil</a>|sintouched|<a href='?src=[UID()];devil=clear'>human</a>"
+			else
+				text += "<a href='?src=[UID()];devil=devil'>DEVIL</a>|<b>ASCENDABLE DEVIL</b>|sintouched|<a href='?src=[UID()];devil=clear'>human</a>"
 		else if(src in ticker.mode.sintouched)
-			text += "devil|<b>SINTOUCHED</b>|<a href='?src=[UID()];devil=clear'>human</a>"
+			text += "devil|Ascendable Devil|<b>SINTOUCHED</b>|<a href='?src=[UID()];devil=clear'>human</a>"
 		else
-			text += "<a href='?src=[UID()];devil=devil'>devil</a>|<a href='?src=[UID()];devil=sintouched'>sintouched</a>|<b>HUMAN</b>"
+			text += "<a href='?src=[UID()];devil=devil'>devil</a>|<a href='?src=[UID()];devil=ascendable_devil'>Ascendable Devil</a>|<a href='?src=[UID()];devil=sintouched'>sintouched</a>|<b>HUMAN</b>"
 
 		if(current && current.client && (ROLE_DEVIL in current.client.prefs.be_special))
 			text += "|Enabled in Prefs"
@@ -1063,6 +1068,12 @@
 						RemoveSpell(/obj/effect/proc_holder/spell/fireball/hellish)
 						RemoveSpell(/obj/effect/proc_holder/spell/targeted/summon_contract)
 						RemoveSpell(/obj/effect/proc_holder/spell/targeted/conjure_item/pitchfork)
+						RemoveSpell(/obj/effect/proc_holder/spell/targeted/conjure_item/pitchfork/greater)
+						RemoveSpell(/obj/effect/proc_holder/spell/targeted/conjure_item/pitchfork/ascended)
+						RemoveSpell(/obj/effect/proc_holder/spell/targeted/conjure_item/violin)
+						RemoveSpell(/obj/effect/proc_holder/spell/targeted/summon_dancefloor)
+						RemoveSpell(/obj/effect/proc_holder/spell/targeted/sintouch)
+						RemoveSpell(/obj/effect/proc_holder/spell/targeted/sintouch/ascended)
 						message_admins("[key_name_admin(usr)] has de-devil'ed [current].")
 						if(issilicon(current))
 							var/mob/living/silicon/S = current
@@ -1074,11 +1085,39 @@
 					message_admins("[key_name_admin(usr)] has de-sintouch'ed [current].")
 					log_admin("[key_name(usr)] has de-sintouch'ed [current].")
 			if("devil")
+				if(devilinfo)
+					devilinfo.ascendable = FALSE
+					message_admins("[key_name_admin(usr)] has made [current] unable to ascend as a devil.")
+					log_admin("[key_name_admin(usr)] has made [current] unable to ascend as a devil.")
+					return
+				if(!ishuman(current) && !isrobot(current))
+					to_chat(usr, "<span class='warning'>This only works on humans and cyborgs!</span>")
+					return
 				ticker.mode.devils += src
 				special_role = "devil"
-				ticker.mode.finalize_devil(src)
+				ticker.mode.finalize_devil(src, FALSE)
 				ticker.mode.add_devil_objectives(src, 2)
 				announceDevilLaws()
+				announce_objectives()
+				message_admins("[key_name_admin(usr)] has devil'ed [current].")
+				log_admin("[key_name(usr)] has devil'ed [current].")
+			if("ascendable_devil")
+				if(devilinfo)
+					devilinfo.ascendable = TRUE
+					message_admins("[key_name_admin(usr)] has made [current] able to ascend as a devil.")
+					log_admin("[key_name_admin(usr)] has made [current] able to ascend as a devil.")
+					return
+				if(!ishuman(current) && !isrobot(current))
+					to_chat(usr, "<span class='warning'>This only works on humans and cyborgs!</span>")
+					return
+				ticker.mode.devils += src
+				special_role = "devil"
+				ticker.mode.finalize_devil(src, TRUE)
+				ticker.mode.add_devil_objectives(src, 2)
+				announceDevilLaws()
+				announce_objectives()
+				message_admins("[key_name_admin(usr)] has devil'ed [current].  The devil has been marked as ascendable.")
+				log_admin("[key_name(usr)] has devil'ed [current]. The devil has been marked as ascendable.")
 			if("sintouched")
 				var/mob/living/carbon/human/H = current
 				H.influenceSin()
@@ -1262,16 +1301,20 @@
 				message_admins("[key_name_admin(usr)] has given [key_name_admin(current)] an uplink")
 
 	else if(href_list["obj_announce"])
-		var/obj_count = 1
-		to_chat(current, "<BR><span class='userdanger'>Your current objectives:</span>")
-		for(var/datum/objective/objective in objectives)
-			to_chat(current, "<B>Objective #[obj_count]</B>: [objective.explanation_text]")
-			obj_count++
-		current << 'sound/ambience/alarm4.ogg'
-		log_admin("[key_name(usr)] has announced [key_name(current)]'s objectives")
-		message_admins("[key_name_admin(usr)] has announced [key_name_admin(current)]'s objectives")
+		announce_objectives()
 
 	edit_memory()
+
+/datum/mind/proc/announce_objectives()
+	var/obj_count = 1
+	to_chat(current, "<BR><span class='userdanger'>Your current objectives:</span>")
+	for(var/datum/objective/objective in objectives)
+		to_chat(current, "<B>Objective #[obj_count]</B>: [objective.explanation_text]")
+		obj_count++
+	current << 'sound/ambience/alarm4.ogg'
+	log_admin("[key_name(usr)] has announced [key_name(current)]'s objectives")
+	message_admins("[key_name_admin(usr)] has announced [key_name_admin(current)]'s objectives")
+
 /*
 /datum/mind/proc/clear_memory(var/silent = 1)
 	var/datum/game_mode/current_mode = ticker.mode

@@ -20,7 +20,8 @@
 					new /obj/item/weapon/coin/silver(user.loc),
 					new /obj/item/stack/sheet/mineral/gold(user.loc),
 					new /obj/item/stack/sheet/mineral/silver(user.loc),
-					new /obj/item/stack/sheet/mineral/diamond(user.loc))
+					new /obj/item/stack/sheet/mineral/diamond(user.loc),
+					new /obj/item/stack/spacecash/c1000(user.loc))
 			C.put_in_hands(item)
 
 /obj/effect/proc_holder/spell/targeted/view_range

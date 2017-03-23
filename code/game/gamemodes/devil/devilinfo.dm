@@ -95,6 +95,7 @@ var/global/list/lawlorify = list (
 	/obj/effect/proc_holder/spell/targeted/summon_contract,
 	/obj/effect/proc_holder/spell/targeted/conjure_item/violin,
 	/obj/effect/proc_holder/spell/targeted/summon_dancefloor)
+	var/ascendable = FALSE
 
 /datum/devilinfo/New()
 	..()
@@ -162,10 +163,15 @@ var/global/list/lawlorify = list (
 			to_chat(owner.current,"<span class='warning'>Your hellish powers have been restored.</span>")
 			give_base_spells()
 		if(BLOOD_THRESHOLD)
+			to_chat(owner.current,"<span class='warning'>You feel as though your humanoid form is about to shed.  You will soon turn into a blood lizard.</span>")
+			sleep(50)
 			increase_blood_lizard()
 		if(TRUE_THRESHOLD)
+			to_chat(owner.current,"<span class='warning'>You feel as though your current form is about to shed.  You will soon turn into a true devil.</span>")
+			sleep(50)
 			increase_true_devil()
 		if(ARCH_THRESHOLD)
+			arch_devil_prelude()
 			increase_arch_devil()
 
 /datum/devilinfo/proc/remove_soul(datum/mind/soul)
@@ -185,15 +191,6 @@ var/global/list/lawlorify = list (
 	if(SOULVALUE < 0)
 		remove_spells()
 		to_chat(owner.current,"<span class='warning'>As punishment for your failures, all of your powers except contract creation have been revoked.</span>")
-
-/datum/devilinfo/proc/increase_form()
-	switch(form)
-		if(BASIC_DEVIL)
-			increase_blood_lizard()
-		if(BLOOD_LIZARD)
-			increase_true_devil()
-		if(TRUE_DEVIL)
-			increase_arch_devil()
 
 /datum/devilinfo/proc/regress_humanoid()
 	to_chat(owner.current,"<span class='warning'>Your powers weaken, have more contracts be signed to regain power.</span>")
@@ -226,8 +223,6 @@ var/global/list/lawlorify = list (
 
 
 /datum/devilinfo/proc/increase_blood_lizard()
-	to_chat(owner.current,"<span class='warning'>You feel as though your humanoid form is about to shed.  You will soon turn into a blood lizard.</span>")
-	sleep(50)
 	if(istype(owner.current, /mob/living/carbon/human))
 		var/mob/living/carbon/human/H = owner.current
 		H.set_species("Unathi")
@@ -244,10 +239,9 @@ var/global/list/lawlorify = list (
 
 
 /datum/devilinfo/proc/increase_true_devil()
-	to_chat(owner.current,"<span class='warning'>You feel as though your current form is about to shed.  You will soon turn into a true devil.</span>")
-	sleep(50)
 	var/mob/living/carbon/true_devil/A = new /mob/living/carbon/true_devil(owner.current.loc, owner.current)
 	A.faction |= "hell"
+	// Put the old body in stasis
 	owner.current.status_flags |= GODMODE
 	owner.current.loc = A
 	A.oldform = owner.current
@@ -257,8 +251,9 @@ var/global/list/lawlorify = list (
 	form = TRUE_DEVIL
 	update_hud()
 
-
-/datum/devilinfo/proc/increase_arch_devil()
+/datum/devilinfo/proc/arch_devil_prelude()
+	if(!ascendable)
+		return
 	var/mob/living/carbon/true_devil/D = owner.current
 	to_chat(D,"<span class='warning'>You feel as though your form is about to ascend.</span>")
 	sleep(50)
@@ -293,6 +288,17 @@ var/global/list/lawlorify = list (
 		return
 	to_chat(world,"<font size=5><span class='danger'><b>SLOTH, WRATH, GLUTTONY, ACEDIA, ENVY, GREED, PRIDE! FIRES OF HELL AWAKEN!!</span></font>")
 	world << 'sound/hallucinations/veryfar_noise.ogg'
+	sleep(50)
+	if(!ticker.mode.devil_ascended)
+		shuttle_master.emergency.request(null, 0.3)
+	ticker.mode.devil_ascended++
+
+/datum/devilinfo/proc/increase_arch_devil()
+	if(!ascendable)
+		return
+	var/mob/living/carbon/true_devil/D = owner.current
+	if(!istype(D))
+		return
 	give_arch_spells()
 	D.convert_to_archdevil()
 	if(istype(D.loc, /obj/effect/dummy/slaughter/))
@@ -300,10 +306,6 @@ var/global/list/lawlorify = list (
 	var/area/A = get_area(owner.current)
 	if(A)
 		notify_ghosts("An arch devil has ascended in \the [A.name]. Reach out to the devil to start climbing the infernal corporate ladder.", title = "Arch Devil Ascended", source = owner.current, action=NOTIFY_ATTACK)
-	sleep(50)
-	if(!ticker.mode.devil_ascended)
-		shuttle_master.emergency.request(null, 0.3)
-	ticker.mode.devil_ascended++
 	form = ARCH_DEVIL
 
 /datum/devilinfo/proc/remove_spells()
@@ -411,55 +413,48 @@ var/global/list/lawlorify = list (
 
 /datum/devilinfo/proc/hellish_resurrection(mob/living/body)
 	message_admins("[owner.name] (true name is: [truename]) is resurrecting using hellish energy.</a>")
-	if(SOULVALUE <= ARCH_THRESHOLD) // once ascended, arch devils do not go down in power by any means.
+	if(SOULVALUE <= ARCH_THRESHOLD && ascendable) // once ascended, arch devils do not go down in power by any means.
 		reviveNumber += LOSS_PER_DEATH
 		update_hud()
 	if(body)
-		body.revive(1,0)
+		body.revive()
 		if(istype(body.loc, /obj/effect/dummy/slaughter/))
 			body.forceMove(get_turf(body))//Fixes dying while jaunted leaving you permajaunted.
 		if(istype(body, /mob/living/carbon/true_devil))
 			var/mob/living/carbon/true_devil/D = body
 			if(D.oldform)
-				D.oldform.revive(1,0) // Heal the old body too, so the devil doesn't resurrect, then immediately regress into a dead body.
+				D.oldform.revive() // Heal the old body too, so the devil doesn't resurrect, then immediately regress into a dead body.
+		if(body.stat == DEAD) // Not sure why this would happen
+			create_new_body()
 	else
-		if(blobstart.len > 0)
-			var/turf/targetturf = get_turf(pick(blobstart))
-			var/mob/currentMob = owner.current
+		create_new_body()
+	check_regression()
+
+/datum/devilinfo/proc/create_new_body()
+	if(blobstart.len > 0)
+		var/turf/targetturf = get_turf(pick(blobstart))
+		var/mob/currentMob = owner.current
+		if(!currentMob)
+			currentMob = owner.get_ghost()
 			if(!currentMob)
-				currentMob = owner.get_ghost()
-				if(!currentMob)
-					message_admins("[owner.name]'s devil resurrection failed due to client logoff.  Aborting.")
-					return -1 //
+				message_admins("[owner.name]'s devil resurrection failed due to client logoff.  Aborting.")
+				return -1
 			if(currentMob.mind != owner)
 				message_admins("[owner.name]'s devil resurrection failed due to becoming a new mob.  Aborting.")
 				return -1
-			currentMob.change_mob_type( /mob/living/carbon/human , targetturf, null, 1)
-			var/mob/living/carbon/human/H  = owner.current
-			give_summon_contract()
-			H.equip_to_slot_or_del(new /obj/item/clothing/under/lawyer/black(H), slot_w_uniform)
-			H.equip_to_slot_or_del(new /obj/item/clothing/shoes/laceup(H), slot_shoes)
-			H.equip_to_slot_or_del(new /obj/item/weapon/storage/briefcase(H), slot_l_hand)
-			H.equip_to_slot_or_del(new /obj/item/weapon/pen(H), slot_l_store)
-			if(SOULVALUE >= BLOOD_THRESHOLD)
-				H.set_species("Unathi")
-				H.underwear = "Nude"
-				H.undershirt = "Nude"
-				H.socks = "Nude"
-				H.change_skin_color(80,16,16)
-				H.regenerate_icons()
-				if(SOULVALUE >= TRUE_THRESHOLD) //Yes, BOTH this and the above if statement are to run if soulpower is high enough.
-					var/mob/living/carbon/true_devil/A = new /mob/living/carbon/true_devil(targetturf)
-					A.faction |= "hell"
-					H.forceMove(A)
-					A.oldform = H
-					A.set_name()
-					owner.transfer_to(A)
-					if(SOULVALUE >= ARCH_THRESHOLD)
-						A.convert_to_archdevil()
-		else
-			throw EXCEPTION("Unable to find a blobstart landmark for hellish resurrection")
-	check_regression()
+		currentMob.change_mob_type( /mob/living/carbon/human, targetturf, null, 1)
+		var/mob/living/carbon/human/H = owner.current
+		// TODO: Make this an outfit
+		give_summon_contract()
+		H.equipOutfit(/datum/outfit/devil_lawyer)
+		if(SOULVALUE >= BLOOD_THRESHOLD)
+			increase_blood_lizard()
+			if(SOULVALUE >= TRUE_THRESHOLD) //Yes, BOTH this and the above if statement are to run if soulpower is high enough.
+				increase_true_devil()
+				if(SOULVALUE >= ARCH_THRESHOLD && ascendable)
+					increase_arch_devil()
+	else
+		throw EXCEPTION("Unable to find a blobstart landmark for hellish resurrection")
 
 /datum/devilinfo/proc/update_hud()
 	if(istype(owner.current, /mob/living/carbon))
@@ -477,3 +472,10 @@ var/global/list/lawlorify = list (
 #undef LOSS_PER_DEATH
 #undef SOULVALUE
 #undef DEVILRESURRECTTIME
+
+/datum/outfit/devil_lawyer
+	name = "Devil Lawyer"
+	uniform = /obj/item/clothing/under/lawyer/black
+	shoes = /obj/item/clothing/shoes/laceup
+	l_hand = /obj/item/weapon/storage/briefcase
+	l_pocket = /obj/item/weapon/pen
