@@ -192,7 +192,11 @@
 			if ("disarm")
 				if (!lying && !ascended) //No stealing the arch devil's pitchfork.
 					if (prob(5))
-						Weaken(2)
+						// Weaken knocks people over
+						// Paralyse knocks people out
+						// It's Paralyse for parity though
+						// Weaken(2)
+						Paralyse(2)
 						playsound(loc, 'sound/weapons/thudswoosh.ogg', 50, 1, -1)
 						add_logs(M, src, "pushed")
 						visible_message("<span class='danger'>[M] has pushed down [src]!</span>", \
