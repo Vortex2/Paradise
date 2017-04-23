@@ -6,8 +6,8 @@
 	opacity = 1
 	density = 1
 	explosion_block = 2
-	damage_cap = 200
-	max_temperature = 6000
+	damage_cap = 600
+	max_temperature = 9000
 	hardness = 10
 	sheet_type = /obj/item/stack/sheet/plasteel
 
