@@ -10,7 +10,6 @@
 	mouse_opacity = 0
 	hitsound = 'sound/weapons/pierce.ogg'
 	var/hitsound_wall = ""
-	pressure_resistance = INFINITY
 	burn_state = LAVA_PROOF
 	var/def_zone = ""	//Aiming at
 	var/mob/firer = null//Who shot it
@@ -222,6 +221,9 @@ obj/item/projectile/Crossed(atom/movable/AM) //A mob moving on a tile with a pro
 /obj/item/projectile/Destroy()
 	ammo_casing = null
 	return ..()
+
+/obj/item/projectile/experience_pressure_difference()
+	return
 
 /obj/item/projectile/proc/dumbfire(var/dir)
 	current = get_ranged_target_turf(src, dir, world.maxx) //world.maxx is the range. Not sure how to handle this better.

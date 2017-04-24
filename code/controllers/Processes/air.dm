@@ -24,7 +24,7 @@ var/global/datum/controller/process/air_system/air_master
 
 /datum/controller/process/air_system/setup()
 	name = "air"
-	schedule_interval = 20 // every 2 seconds
+	schedule_interval = 5 // every 0.5 seconds
 	start_delay = 4
 	air_master = src
 

@@ -10,6 +10,7 @@ var/list/robot_verbs_default = list(
 	maxHealth = 100
 	health = 100
 	universal_understand = 1
+	has_limbs = 1
 
 	var/sight_mode = 0
 	var/custom_name = ""

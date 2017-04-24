@@ -100,8 +100,8 @@ emp_act
 		if(bp && istype(bp ,/obj/item/clothing))
 			var/obj/item/clothing/C = bp
 			if(C.body_parts_covered & def_zone.body_part)
-				protection += C.armor[type]	
-				
+				protection += C.armor[type]
+
 	return protection
 
 //this proc returns the Siemens coefficient of electrical resistivity for a particular external organ.
@@ -460,12 +460,11 @@ emp_act
 
 	return
 
-/mob/living/carbon/human/experience_pressure_difference(pressure_difference, direction)
+/mob/living/carbon/human/experience_pressure_difference()
 	playsound(src, 'sound/effects/space_wind.ogg', 50, 1)
-	if(shoes)
-		if(istype(shoes,/obj/item/clothing/shoes/magboots) && (shoes.flags & NOSLIP)) //TODO: Make a not-shit shoe var system to negate airflow.
-			return 0
-	..()
+	if(shoes && shoes.flags & NOSLIP)
+		return 0
+	return ..()
 
 /mob/living/carbon/human/water_act(volume, temperature, source)
 	..()

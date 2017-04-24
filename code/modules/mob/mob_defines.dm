@@ -173,8 +173,6 @@
 	var/robot_talk_understand = 0
 	var/alien_talk_understand = 0
 
-	var/has_limbs = 1 //Whether this mob have any limbs he can move with
-
 	//SSD var, changed it up some so people can have special things happen for different mobs when SSD.
 	var/player_logged = 0
 
@@ -196,5 +194,5 @@
 	var/list/permanent_huds = list()
 
 	var/list/actions = list()
-	
+
 	var/list/progressbars = null	//for stacking do_after bars

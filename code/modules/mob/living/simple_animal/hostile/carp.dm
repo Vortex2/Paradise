@@ -33,6 +33,7 @@
 
 	faction = list("carp")
 	flying = 1
+	pressure_resistance = 200
 	gold_core_spawnable = CHEM_MOB_SPAWN_HOSTILE
 
 /mob/living/simple_animal/hostile/carp/Process_Spacemove(var/movement_dir = 0)

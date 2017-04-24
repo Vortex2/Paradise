@@ -1,6 +1,7 @@
 /mob/living
 	see_invisible = SEE_INVISIBLE_LIVING
 
+	pressure_resistance = 10
 	//Health and life related vars
 	var/maxHealth = 100 //Maximum health that should be possible.
 	var/health = 100 	//A mob's health
@@ -38,6 +39,8 @@
 
 	var/bloodcrawl = 0 //0 No blood crawling, 1 blood crawling, 2 blood crawling+mob devour
 	var/holder = null //The holder for blood crawling
+
+	var/has_limbs = 0 //does the mob have distinct limbs?(arms,legs, chest,head)
 
 	var/ventcrawler = 0 //0 No vent crawling, 1 vent crawling in the nude, 2 vent crawling always
 	var/list/icon/pipes_shown = list()

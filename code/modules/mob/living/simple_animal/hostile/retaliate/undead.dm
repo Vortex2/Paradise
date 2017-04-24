@@ -47,6 +47,7 @@
 	faction = list("undead") // did I mention ghost
 	loot = list(/obj/item/weapon/reagent_containers/food/snacks/ectoplasm)
 	del_on_death = 1
+	pressure_resistance = 300
 
 /mob/living/simple_animal/hostile/retaliate/ghost/Process_Spacemove(var/check_drift = 0)
 	return 1

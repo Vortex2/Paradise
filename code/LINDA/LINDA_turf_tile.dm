@@ -301,23 +301,26 @@
 	for(var/atom/movable/M in src)
 		M.experience_pressure_difference(pressure_difference, pressure_direction)
 
+/atom/movable/var/pressure_resistance = 10
+/atom/movable/var/last_high_pressure_movement_air_cycle = 0
 
+/atom/movable/proc/experience_pressure_difference(pressure_difference, direction, pressure_resistance_prob_delta = 0)
+	var/const/PROBABILITY_OFFSET = 25
+	var/const/PROBABILITY_BASE_PRECENT = 75
+	set waitfor = 0
+	. = 0
+	if(!anchored && !pulledby)
+		. = 1
+		if(last_high_pressure_movement_air_cycle < air_master.current_cycle)
+			var/move_prob = 100
+			if(pressure_resistance > 0)
+				move_prob = (pressure_difference/pressure_resistance*PROBABILITY_BASE_PRECENT)-PROBABILITY_OFFSET
+			move_prob += pressure_resistance_prob_delta
+			if(move_prob > PROBABILITY_OFFSET && prob(move_prob))
+				step(src, direction)
+				last_high_pressure_movement_air_cycle = air_master.current_cycle
 
-
-/atom/movable/var/pressure_resistance = 5
-/atom/movable/var/last_forced_movement = 0
-
-/atom/movable/proc/experience_pressure_difference(pressure_difference, direction)
-	if(last_forced_movement >= air_master.current_cycle)
-		return 0
-	else if(!anchored && !pulledby)
-		if(pressure_difference > pressure_resistance)
-			last_forced_movement = air_master.current_cycle
-			spawn step(src, direction)
-		return 1
-
-
-
+///////////////////////////EXCITED GROUPS/////////////////////////////
 
 /datum/excited_group
 	var/list/turf_list = list()
@@ -339,13 +342,13 @@
 		for(var/turf/simulated/T in E.turf_list)
 			T.excited_group = src
 			turf_list += T
-			reset_cooldowns()
+		reset_cooldowns()
 	else
 		air_master.excited_groups -= src
 		for(var/turf/simulated/T in turf_list)
 			T.excited_group = E
 			E.turf_list += T
-			E.reset_cooldowns()
+		E.reset_cooldowns()
 
 /datum/excited_group/proc/reset_cooldowns()
 	breakdown_cooldown = 0
